@@ -232,4 +232,8 @@
   .page-header {
     padding: 32px 100px 18px;
   }
+
+  .footer {
+    padding: 32px 100px 48px;
+  }
 }
