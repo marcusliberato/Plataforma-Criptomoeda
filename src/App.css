@@ -380,9 +380,10 @@
 
 .footer {
   padding: 24px 20px 40px;
-  padding-left: 100px;
+  padding-left: 20px;
   padding-right: 20px;
-  width: 1870px;
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 12px;

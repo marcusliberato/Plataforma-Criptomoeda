@@ -451,7 +451,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer className='footer' style={{ paddingLeft: '100px', paddingRight: '65px' }}>
+      <footer className='footer'>
         <div>
           <p className='brand-title'>Criptmoeda</p>
           <p>Projeto Integrador de Front-end com Frameworks.</p>
