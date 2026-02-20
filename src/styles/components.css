@@ -1,0 +1,335 @@
+/* CARDS E COMPONENTES DE RESUMO
+   Estruturas reutilizáveis para exibição de informações
+   consolidadas (carteira, estatísticas e destaques). */
+
+/* DD-38: Card principal de destaque (Hero Card)
+   - Superfície branca para contraste com o fundo
+   - Bordas arredondadas e sombra para sensação de elevação */
+   .hero-card {
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 24px;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  /* DD-39: Cabeçalho de card
+     Alinha título, subtítulo e indicadores visuais */
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  
+  /* DD-40: Título do card
+     Destaque tipográfico para informação principal */
+  .card-title {
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  /* DD-41: Subtítulo do card
+     Informação secundária com menor hierarquia visual */
+  .card-subtitle {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #6b7280;
+  }
+  
+  /* DD-42: Badge de status
+     Indica estado (ex.: “Ao vivo”) de forma clara e discreta */
+  .badge {
+    background: #e7f7ee;
+    color: #1b8b4c;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+  
+  /* DD-43: Indicador de variação positiva
+     Uso de cor para leitura rápida de desempenho */
+  .card-change {
+    margin: 0;
+    color: #1b8b4c;
+    font-weight: 600;
+  }
+  
+  /* DD-44: Grid interno de estatísticas
+     Layout fluido para adaptação automática */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  
+  /* DD-45: Card estatístico
+     Destaque individual para métricas secundárias */
+  .stat-card {
+    padding: 12px 14px;
+    background: #f5f6ff;
+    border-radius: 14px;
+  }
+  
+  /* DD-46: Texto auxiliar das estatísticas
+     Hierarquia visual menor para rótulos */
+  .stat-card span {
+    display: block;
+    color: #6b7280;
+    font-size: 0.8rem;
+  }
+  
+  /* MERCADO DE CRIPTOMOEDAS
+     Componentes para listagem dinâmica de ativos.
+
+  /* DD-47: Grid do mercado
+     Estrutura simples para expansão futura (responsiva) */
+  .market-grid {
+    display: grid;
+    gap: 16px;
+  }
+  
+  /* DD-48: Card de ativo
+     Layout horizontal com leitura rápida de preço e variação */
+  .market-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+  }
+  
+  /* DD-49: Nome do ativo
+     Ênfase no ativo principal negociado */
+  .asset-name {
+    margin: 0 0 8px;
+    font-weight: 600;
+  }
+  
+  /* DD-50: Símbolo do ativo
+     Informação complementar com menor contraste */
+  .asset-name span {
+    color: #8a90a1;
+    font-weight: 500;
+    font-size: 0.85rem;
+  }
+  
+  /* DD-51: Área de variação do ativo
+     Alinhamento à direita para leitura financeira padrão */
+  .asset-change {
+    text-align: right;
+    font-weight: 600;
+  }
+  
+  /* DD-52: Volume negociado
+     Texto secundário para contextualização */
+  .asset-change p {
+    margin: 4px 0 0;
+    font-size: 0.8rem;
+    color: #6b7280;
+  }
+  
+  /* DD-53: Tendência positiva */
+  .asset-change.up {
+    color: #1b8b4c;
+  }
+  
+  /* DD-54: Tendência negativa */
+  .asset-change.down {
+    color: #d14343;
+  }
+  
+  /* SEÇÃO DE DESTAQUE (HIGHLIGHT)
+     Área de contraste visual para informações estratégicas. */
+  
+  /* DD-55: Seção highlight
+     Fundo escuro para criar quebra visual e foco */
+  .highlight {
+    background: #111827;
+    color: #f8fafc;
+    border-radius: 32px;
+    margin: 0;
+    padding: 48px 24px;
+    display: grid;
+    gap: 28px;
+  }
+  
+  /* DD-56: Texto secundário no highlight
+     Contraste ajustado para leitura em fundo escuro */
+  .highlight-content p {
+    color: #cbd5f5;
+  }
+  
+  /* DD-57: Lista de benefícios/destaques
+     Organização vertical clara */
+  .highlight-list {
+    display: grid;
+    gap: 16px;
+  }
+  
+  /* DD-58: Títulos dos destaques
+     Separação visual entre itens */
+  .highlight-list h3 {
+    margin: 0 0 6px;
+  }
+  
+  /* DD-59: Card interno do highlight
+     Superfície elevada para informações adicionais */
+  .highlight-card {
+    background: #1f2937;
+    border-radius: 24px;
+    padding: 24px;
+  }
+  
+  /* TRANSAÇÕES
+     Histórico e status de operações financeiras.
+     
+  /* DD-60: Lista de transações
+     Espaçamento vertical para leitura sequencial */
+  .transaction-list {
+    display: grid;
+    gap: 16px;
+    margin-top: 18px;
+  }
+  
+  /* DD-61: Item de transação
+     Layout flexível com separação clara de dados */
+  .transaction-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 14px;
+    background: #111827;
+    border-radius: 16px;
+  }
+  
+  /* DD-62: Tipo de transação
+     Ênfase textual para identificação rápida */
+  .transaction-type {
+    margin: 0;
+    font-weight: 600;
+  }
+  
+  /* DD-63: Ativo negociado
+     Texto secundário com contraste reduzido */
+  .transaction-asset {
+    margin: 0;
+    color: #cbd5f5;
+  }
+  
+  /* DD-64: Metadados da transação
+     Alinhamento à direita para padrão financeiro */
+  .transaction-meta {
+    text-align: right;
+    display: grid;
+    gap: 4px;
+  }
+  
+  /* DD-65: Status genérico da transação
+     Badge reutilizável com estados visuais */
+  .status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    width: fit-content;
+    justify-self: end;
+  }
+  
+  /* DD-66: Status concluído */
+  .status.done {
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+  }
+  
+  /* DD-67: Status pendente */
+  .status.pending {
+    background: rgba(251, 191, 36, 0.2);
+    color: #facc15;
+  }
+  
+  /* AÇÕES DE COMPRA E VENDA
+     Formulários e simulações de operação. */
+  
+  /* DD-68: Grid de ações
+     Permite disposição em coluna ou duas colunas (responsivo) */
+  .action-grid {
+    display: grid;
+    gap: 18px;
+  }
+  
+  /* DD-69: Card de ação
+     Superfície clara para formulários e foco na interação */
+  .action-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 22px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    display: grid;
+    gap: 16px;
+  }
+  
+  /* DD-70: Agrupamento de inputs
+     Organização vertical consistente */
+  .action-inputs {
+    display: grid;
+    gap: 12px;
+  }
+  
+  /* DD-71: Labels dos inputs
+     Hierarquia visual clara e legível */
+  .action-inputs label {
+    display: grid;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #6b7280;
+  }
+  
+  /* DD-72: Campos de entrada
+     Área de toque confortável e fundo neutro */
+  .action-inputs input,
+  .action-inputs select {
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    outline: none;
+  }
+  
+  /* DD-73: Estado de foco
+     Feedback visual claro para acessibilidade */
+  .action-inputs input:focus,
+  .action-inputs select:focus {
+    border-color: rgba(91, 99, 255, 0.6);
+    box-shadow: 0 0 0 4px rgba(91, 99, 255, 0.12);
+  }
+  
+  /* FOOTER
+     Informações institucionais e navegação secundária. */
+  
+  /* DD-74: Rodapé da aplicação
+     Layout simples e discreto para informações finais */
+  .footer {
+    padding: 24px 0 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: #6b7280;
+  }
+  
+  /* DD-75: Links do rodapé
+     Organização horizontal com quebra automática */
+  .footer-links {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  
