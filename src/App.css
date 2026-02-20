@@ -364,8 +364,8 @@
   margin: 0 20px 48px;
   padding-top: 50px;
   padding-bottom: 50px;
-  padding-left: 25px;
-  padding-right: 25px;
+  padding-left: 20px;
+  padding-right: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -381,8 +381,8 @@
 .footer {
   padding: 24px 20px 40px;
   padding-left: 100px;
-  padding-right: 24px;
-  width: 1819px;
+  padding-right: 20px;
+  width: 1870px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -497,8 +497,8 @@
     justify-content: space-between;
     padding-top: 50px;
     padding-bottom: 50px;
-    padding-left: 25px;
-    padding-right: 25px;
+    padding-left: 20px;
+    padding-right: 20px;
     margin: 0 60px 64px;
   }
 
@@ -534,3 +534,5 @@
   .page-header {
     padding: 32px 100px 18px;
   }
+
+

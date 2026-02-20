@@ -431,7 +431,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className='section cta'>
+        <section className='section cta' style={{ paddingRight: '20px', paddingLeft: '20px', paddingTop: '45px', paddingBottom: '45px' }}>
           <div>
             <h2>Pronto para começar?</h2>
             <p>
@@ -451,7 +451,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer className='footer'>
+      <footer className='footer' style={{ paddingLeft: '100px', paddingRight: '65px' }}>
         <div>
           <p className='brand-title'>Criptmoeda</p>
           <p>Projeto Integrador de Front-end com Frameworks.</p>
@@ -468,4 +468,7 @@ export default function App() {
     </div>
   );
 }
+
+
+
 
