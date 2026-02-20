@@ -362,11 +362,10 @@
   color: #ffffff;
   border-radius: 28px;
   margin: 0 20px 48px;
-  width: 1700px;
   padding-top: 50px;
   padding-bottom: 50px;
   padding-left: 25px;
-  padding-right: 27px;
+  padding-right: 25px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -499,7 +498,7 @@
     padding-top: 50px;
     padding-bottom: 50px;
     padding-left: 25px;
-    padding-right: 27px;
+    padding-right: 25px;
     margin: 0 60px 64px;
   }
 
