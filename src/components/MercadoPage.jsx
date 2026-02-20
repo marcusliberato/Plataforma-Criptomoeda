@@ -142,7 +142,7 @@ export default function MercadoPage() {
               Inicio
             </a>
             <a className='ghost-button' href='/transacoes.html'>
-              Transacoes
+              Transações
             </a>
           </div>
         </nav>
@@ -203,7 +203,7 @@ export default function MercadoPage() {
 
         <div className='footer-links'>
           <a href='/'>Pagina inicial</a>
-          <a href='/transacoes.html'>Transacoes</a>
+          <a href='/Transações.html'>Transacoes</a>
         </div>
       </footer>
     </div>

@@ -204,8 +204,8 @@ export default function App() {
             <a className='ghost-button' href='/mercado.html'>
               Mercado
             </a>
-            <a className='ghost-button' href='/transacoes.html'>
-              Transacoes
+            <a className='ghost-button' href='/Transações.html'>
+              Transações
             </a>
             <button className='ghost-button' type='button'>
               Entrar
@@ -431,7 +431,15 @@ export default function App() {
           </div>
         </section>
 
-        <section className='section cta' style={{ paddingRight: '20px', paddingLeft: '20px', paddingTop: '45px', paddingBottom: '45px' }}>
+        <section
+          className='section cta'
+          style={{
+            paddingRight: '20px',
+            paddingLeft: '20px',
+            paddingTop: '45px',
+            paddingBottom: '45px',
+          }}
+        >
           <div>
             <h2>Pronto para começar?</h2>
             <p>
@@ -468,7 +476,3 @@ export default function App() {
     </div>
   );
 }
-
-
-
-
