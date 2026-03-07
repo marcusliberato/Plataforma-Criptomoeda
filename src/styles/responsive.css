@@ -1,0 +1,181 @@
+/* =========================================================
+   RESPONSIVE.CSS — mobile-first
+   Breakpoints: 768 / 1024 / 1280 / 1440
+========================================================= */
+
+/* =========================
+   ≥ 768px (tablet)
+========================= */
+@media (min-width: 768px) {
+  .hero {
+    padding: 48px 0 80px;
+  }
+
+  .hero-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+  }
+
+  .section {
+    padding: 64px 0;
+  }
+
+  .market-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .highlight {
+    grid-template-columns: 1.2fr 1fr;
+    padding: 56px;
+  }
+
+  .action-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32px 0 48px;
+  }
+}
+
+/* =========================
+   ≥ 1024px (desktop)
+========================= */
+@media (min-width: 1024px) {
+  .hero {
+    padding: 64px 0 96px;
+  }
+
+  .section {
+    padding: 72px 0;
+  }
+
+  /* Highlight (desktop): mais largo e ancorado à esquerda */
+  .section.highlight {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .section.highlight .container {
+    margin-left: 0;
+    margin-right: auto;
+    max-width: none;
+    width: calc(100% - 64px);
+
+    background: #111827;
+    color: #f8fafc;
+    border-radius: 32px;
+
+    display: grid;
+    grid-template-columns: minmax(560px, 1.35fr) minmax(420px, 1fr);
+    gap: 48px;
+
+    padding: 56px;
+    align-items: start;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .highlight-card {
+    width: 100%;
+    max-width: 640px;
+    justify-self: end;
+    align-self: start;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .transaction-list {
+    gap: 14px;
+    margin-top: 16px;
+  }
+
+  .transaction-item {
+    padding: 14px 16px;
+  }
+}
+
+/* =========================
+   ≥ 1280px (wide desktop)
+========================= */
+@media (min-width: 1280px) {
+  :root {
+    --max: 1440px;
+  }
+
+  .container {
+    width: min(var(--max), calc(100% - 140px));
+  }
+
+  .hero {
+    padding: 80px 0 110px;
+  }
+
+  .section {
+    padding: 88px 0;
+  }
+
+  .market-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .cta {
+    padding: 52px 70px;
+  }
+
+  .section.highlight .container {
+    width: calc(100% - 88px);
+    grid-template-columns: minmax(640px, 1.45fr) minmax(520px, 1fr);
+    gap: 56px;
+    padding: 64px;
+  }
+
+  .highlight-card {
+    max-width: 680px;
+    padding: 32px;
+  }
+}
+
+/* =========================
+   ≥ 1440px (ultra-wide)
+========================= */
+@media (min-width: 1440px) {
+  :root {
+    --max: 1560px;
+  }
+
+  .section.highlight {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .container {
+    width: min(var(--max), calc(100% - 120px));
+    margin: 0 auto;
+  }
+
+  .section.highlight .container {
+    width: 100%;
+    max-width: var(--max);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 700px 1fr auto;
+    gap: 120px;
+    padding: 16px 30px 16px;
+    align-items: center;
+    /* 2. Importante: mude para visible para garantir que o card apareça */
+    overflow: visible;
+    box-sizing: border-box;
+  }
+
+  .highlight-card {
+    /* 3. Definimos uma largura fixa para o card não sumir nem deformar */
+    width: 520px;
+    grid-column: 3; /* Força o card a ficar na terceira coluna (direita) */
+    margin: 0;
+    display: block; /* Garante visibilidade */
+  }
+}

@@ -1,0 +1,55 @@
+/* SISTEMA DE BOTÕES E AÇÕES
+  Define padrões visuais, hierarquia de ações e feedback
+  para interações do usuário.
+   */
+
+/* DD-33: Base comum dos botões
+   - Formato arredondado para estética moderna e mobile-first
+   - Padding confortável para interação por toque
+   - Cursor pointer para reforçar interatividade */
+   .primary-button,
+   .secondary-button,
+   .outline-button,
+   .ghost-button {
+     border: none;
+     border-radius: 999px;
+     padding: 10px 18px;
+     font-weight: 600;
+     cursor: pointer;
+   }
+   
+   /* DD-34: Botão primário (ação principal)
+      - Cor de destaque da identidade visual
+      - Alto contraste para chamadas à ação (CTA)
+      - Sombra para indicar prioridade e profundidade */
+   .primary-button {
+     background: #5b63ff;
+     color: #ffffff;
+     box-shadow: 0 10px 18px rgba(91, 99, 255, 0.3);
+   }
+   
+   /* DD-35: Botão secundário (ações complementares)
+      - Aparência neutra para não competir com o CTA principal
+      - Mantém contraste adequado em fundos claros */
+   .secondary-button {
+     background: #111827;
+     color: #ffffff;
+   }
+   
+   /* DD-36: Botão outline (ações alternativas)
+      - Destaque visual sem preenchimento
+      - Usado quando há múltiplas opções no mesmo contexto */
+   .outline-button {
+     background: transparent;
+     border: 1px solid #5b63ff;
+     color: #5b63ff;
+   }
+   
+   /* DD-37: Botão ghost (ações de menor prioridade)
+      - Aparência leve para navegação e ações auxiliares
+      - Mantém consistência cromática com a marca */
+   .ghost-button {
+     background: #eef2ff;
+     color: #4f46e5;
+   }
+   
