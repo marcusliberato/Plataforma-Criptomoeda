@@ -45,6 +45,11 @@
   gap: 12px;
 }
 
+.nav-link.active {
+  background: #dfe4ff;
+  color: #3730a3;
+}
+
 .section {
   padding: 48px 20px;
 }

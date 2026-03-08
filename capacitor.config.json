@@ -1,0 +1,7 @@
+{
+  "appId": "com.criptmoeda.app",
+  "appName": "Criptmoeda",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
+

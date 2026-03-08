@@ -1,42 +1,9 @@
 import './TransactionsPage.css';
 
-const transactions = [
-  {
-    type: 'Compra',
-    asset: 'Bitcoin',
-    amount: '0,024 BTC',
-    status: 'Concluida',
-    statusKey: 'done',
-    time: 'Hoje, 09:48',
-    value: 'R$ 7.184,22',
-  },
-  {
-    type: 'Venda',
-    asset: 'Ethereum',
-    amount: '1,4 ETH',
-    status: 'Processando',
-    statusKey: 'pending',
-    time: 'Hoje, 09:20',
-    value: 'R$ 20.115,10',
-  },
-  {
-    type: 'Compra',
-    asset: 'Solana',
-    amount: '22 SOL',
-    status: 'Concluida',
-    statusKey: 'done',
-    time: 'Hoje, 08:31',
-    value: 'R$ 18.004,80',
-  },
-  {
-    type: 'Compra',
-    asset: 'Ethereum',
-    amount: '0,35 ETH',
-    status: 'Concluida',
-    statusKey: 'done',
-    time: 'Ontem, 22:14',
-    value: 'R$ 5.028,70',
-  },
+const notes = [
+  'Este sistema nao executa compra e venda de criptomoedas.',
+  'As telas exibem apenas dados publicos retornados pelas APIs das exchanges.',
+  'Use a pagina Mercado para acompanhar pares, ultimo preco e livro de ofertas.',
 ];
 
 export default function TransactionsPage() {
@@ -48,17 +15,20 @@ export default function TransactionsPage() {
             <span className='brand-dot' aria-hidden='true' />
             <div>
               <p className='brand-title'>Criptmoeda</p>
-              <p className='brand-subtitle'>Plataforma Digital</p>
+              <p className='brand-subtitle'>Informacoes do sistema</p>
             </div>
           </div>
 
           <div className='nav-actions'>
-            <a className='ghost-button' href='/'>
-              Inicio
+            <a className='ghost-button nav-link' href='/'>
+              Início
             </a>
-            <button className='primary-button' type='button'>
-              Exportar extrato
-            </button>
+            <a className='ghost-button nav-link' href='/mercado.html'>
+              Mercado
+            </a>
+            <a className='ghost-button nav-link active' href='/transacoes.html'>
+              Transações
+            </a>
           </div>
         </nav>
       </header>
@@ -67,31 +37,24 @@ export default function TransactionsPage() {
         <section className='section'>
           <div className='section-header'>
             <div>
-              <p className='section-tag'>Historico dedicado</p>
-              <h2>Painel de transações</h2>
+              <p className='section-tag'>Escopo da aplicacao</p>
+              <h2>Sem negociacao de ativos</h2>
               <p className='market-meta'>
-                Visualização separada para compras, vendas e status em tempo
-                real.
+                Esta pagina substitui o historico de transações para evitar
+                dados simulados.
               </p>
             </div>
-            <a className='ghost-button link-button' href='/'>
-              Voltar para home
+            <a className='ghost-button link-button' href='/mercado.html'>
+              Ir para mercado
             </a>
           </div>
 
           <div className='transaction-list transaction-page-list'>
-            {transactions.map((t, idx) => (
-              <article key={`${t.asset}-${idx}`} className='transaction-item'>
+            {notes.map((note) => (
+              <article key={note} className='transaction-item'>
                 <div>
-                  <p className='transaction-type'>{t.type}</p>
-                  <p className='transaction-asset'>{t.asset}</p>
-                  <span>{t.amount}</span>
-                </div>
-
-                <div className='transaction-meta'>
-                  <strong>{t.value}</strong>
-                  <span className={`status ${t.statusKey}`}>{t.status}</span>
-                  <small>{t.time}</small>
+                  <p className='transaction-type'>Informacao</p>
+                  <p className='transaction-asset'>{note}</p>
                 </div>
               </article>
             ))}
@@ -102,14 +65,13 @@ export default function TransactionsPage() {
       <footer className='footer'>
         <div>
           <p className='brand-title'>Criptmoeda</p>
-          <p>Painel dedicado de historico de transacoes.</p>
+          <p>Painel somente leitura com dados de APIs.</p>
         </div>
 
         <div className='footer-links'>
-          <a href='/'>Pagina inicial</a>
-          <a href='#!' onClick={(e) => e.preventDefault()}>
-            Suporte
-          </a>
+          <a href='/'>Início</a>
+          <a href='/mercado.html'>Mercado</a>
+          <a href='/transacoes.html'>Transações</a>
         </div>
       </footer>
     </div>
