@@ -35,7 +35,7 @@ export default function App() {
               <p className='section-tag'>Dados de mercado</p>
               <h2>Cotações, pares livos e ofertas</h2>
               <p className='market-meta'>
-                Leitura com dados publicos de Binance e Bybit.
+                Leitura com dados públicos de Binance e Bybit.
               </p>
             </div>
           </div>
