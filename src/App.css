@@ -34,6 +34,11 @@
   margin: 0;
 }
 
+.brand .brand-title {
+  font-size: 1.4rem;
+  line-height: 1.1;
+}
+
 .brand-subtitle {
   margin: 0;
   font-size: 0.75rem;
@@ -162,7 +167,7 @@
 }
 
 .section {
-  padding: 48px 20px;
+  padding: 16px 20px 48px;
 }
 
 .section-header {
@@ -176,15 +181,14 @@
 
 .section-tag {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
   color: #6c63ff;
-  font-weight: 600;
-  text-transform: uppercase;
+  font-weight: 700;
 }
 
 .section h2 {
   margin: 6px 0 0;
-  font-size: clamp(1.6rem, 4vw, 2.3rem);
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
 }
 
 .market-meta {
@@ -508,7 +512,7 @@
   }
 
   .section {
-    padding: 64px 60px;
+    padding: 20px 60px 64px;
   }
 
   .market-grid {
@@ -551,7 +555,7 @@
   }
 
   .section {
-    padding: 72px 100px;
+    padding: 24px 100px 72px;
   }
 
   .highlight {
@@ -564,5 +568,9 @@
 
   .page-header {
     padding: 32px 100px 18px;
+  }
+
+  .footer {
+    padding: 32px 100px 48px;
   }
 }

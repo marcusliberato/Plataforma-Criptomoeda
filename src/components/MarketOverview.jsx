@@ -414,7 +414,6 @@ export default function MarketOverview() {
       <div className='dashboard-toolbar'>
         <div className='dashboard-meta'>
           <p>{lastUpdateLabel}</p>
-          <p>Sistema em modo informativo: apenas dados publicos das APIs.</p>
         </div>
 
         <div className='dashboard-filters'>
