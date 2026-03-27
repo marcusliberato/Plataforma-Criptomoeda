@@ -25,6 +25,15 @@ const bybitTickers = {
   },
 };
 
+const binanceKlines = [[0, '63000.00', '0', '0', '64000.00']];
+
+const bybitKlines = {
+  retCode: 0,
+  result: {
+    list: [[0, '64000.00', '0', '0', '64200.00']],
+  },
+};
+
 function jsonResponse(payload, status = 200) {
   return Promise.resolve({
     ok: status >= 200 && status < 300,
@@ -55,6 +64,10 @@ describe('MarketOverview', () => {
           });
         }
 
+        if (endpoint.includes('/api/v3/klines')) {
+          return jsonResponse(binanceKlines);
+        }
+
         if (endpoint.includes('/v5/market/orderbook')) {
           return jsonResponse({
             retCode: 0,
@@ -63,6 +76,10 @@ describe('MarketOverview', () => {
               a: [['64220.00', '0.29']],
             },
           });
+        }
+
+        if (endpoint.includes('/v5/market/kline')) {
+          return jsonResponse(bybitKlines);
         }
 
         return jsonResponse({}, 404);
@@ -82,7 +99,9 @@ describe('MarketOverview', () => {
     expect(screen.getByText('Último preço')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/v3/depth'));
+      expect(
+        fetch.mock.calls.some(([url]) => String(url).includes('/api/v3/depth')),
+      ).toBe(true);
     });
   });
 
@@ -113,5 +132,53 @@ describe('MarketOverview', () => {
     await userEvent.click(nextPageButton);
 
     expect(within(binanceCard).getByText('Pagina 2 de 2')).toBeInTheDocument();
+  });
+
+  it('faz fallback para a Bybit quando a Binance estiver indisponivel', async () => {
+    fetch.mockImplementation((url) => {
+      const endpoint = String(url);
+
+      if (endpoint.includes('/api/v3/')) {
+        return Promise.reject(new TypeError('Failed to fetch'));
+      }
+
+      if (endpoint.includes('/v5/market/tickers')) {
+        return jsonResponse(bybitTickers);
+      }
+
+      if (endpoint.includes('/v5/market/orderbook')) {
+        return jsonResponse({
+          retCode: 0,
+          result: {
+            b: [['64200.00', '0.31']],
+            a: [['64220.00', '0.29']],
+          },
+        });
+      }
+
+      if (endpoint.includes('/v5/market/kline')) {
+        return jsonResponse(bybitKlines);
+      }
+
+      return jsonResponse({}, 404);
+    });
+
+    render(<MarketOverview />);
+
+    const exchangeSelect = await screen.findByLabelText('Exchange');
+
+    await waitFor(() => {
+      expect(exchangeSelect).toHaveValue('bybit');
+    });
+
+    expect(
+      await screen.findByRole('heading', { level: 3, name: /Bybit - BTCUSDT/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/Binance e Bybit nao responderam no momento/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/Binance indisponivel agora/i),
+    ).not.toBeInTheDocument();
   });
 });

@@ -1,8 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import './MarketOverview.css';
 
-const BINANCE_BASE_URL =
-  import.meta.env.VITE_BINANCE_BASE_URL || 'https://data-api.binance.vision';
+const BINANCE_BASE_URLS = [
+  import.meta.env.VITE_BINANCE_BASE_URL ||
+    (import.meta.env.DEV
+      ? '/market-proxy'
+      : 'https://data-api.binance.vision'),
+  'https://api.binance.com',
+  'https://api-gcp.binance.com',
+  'https://api1.binance.com',
+  'https://api2.binance.com',
+  'https://api3.binance.com',
+];
 const BYBIT_BASE_URL =
   import.meta.env.VITE_BYBIT_BASE_URL || 'https://api.bybit.com';
 
@@ -12,8 +21,8 @@ const EXCHANGES = [
 ];
 
 const PERIODS = [
-  { key: '1h', label: '1H', binanceInterval: '1h', bybitInterval: '1h' },
-  { key: '1d', label: '1D', binanceInterval: '1d', bybitInterval: '1d' },
+  { key: '1h', label: '1H', binanceInterval: '1h', bybitInterval: '60' },
+  { key: '1d', label: '1D', binanceInterval: '1d', bybitInterval: '1440' },
 ];
 
 const PAIRS_PER_PAGE = 8;
@@ -75,6 +84,14 @@ function formatQuantity(value) {
   }).format(value);
 }
 
+function formatSourceLabel(url) {
+  if (url.startsWith('/')) {
+    return 'proxy local (api.binance.com)';
+  }
+
+  return url.replace('https://', '').replace('/api/v3', '');
+}
+
 function normalizeOrderLevels(levels) {
   if (!Array.isArray(levels)) {
     return [];
@@ -86,31 +103,55 @@ function normalizeOrderLevels(levels) {
   }));
 }
 
+async function fetchBinanceUrl(path, params = {}) {
+  let lastError = null;
+
+  for (const baseUrl of BINANCE_BASE_URLS) {
+    try {
+      const url = baseUrl.startsWith('/')
+        ? new URL(`${baseUrl}${path}`, window.location.origin)
+        : new URL(path, baseUrl);
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          url.searchParams.set(key, String(value));
+        }
+      });
+      url.searchParams.set('_', String(Date.now()));
+
+      const response = await fetch(url.toString(), { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      return { response, baseUrl };
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+    }
+  }
+
+  throw new Error(
+    `Falha Binance: ${lastError?.message || 'nenhuma resposta do servidor'}`,
+  );
+}
+
 async function fetchBinanceTickers() {
-  const url = new URL('/api/v3/ticker/24hr', BINANCE_BASE_URL);
-  url.searchParams.set('_', String(Date.now()));
-  const response = await fetch(url.toString(), { cache: 'no-store' });
-
-  if (!response.ok) {
-    throw new Error(`Falha Binance: HTTP ${response.status}`);
-  }
-
+  const { response, baseUrl } = await fetchBinanceUrl('/api/v3/ticker/24hr');
   const payload = await response.json();
-  if (!Array.isArray(payload)) {
-    throw new Error('Falha Binance: formato de dados invalido');
-  }
 
-  return payload
-    .map((ticker) => ({
-      symbol: ticker.symbol,
-      lastPrice: parseNumber(ticker.lastPrice),
-      changePercent: parseNumber(ticker.priceChangePercent),
-      quoteVolume: parseNumber(ticker.quoteVolume),
-    }))
-    .filter(
-      (ticker) => typeof ticker.symbol === 'string' && ticker.symbol.length > 0,
-    )
-    .sort((a, b) => a.symbol.localeCompare(b.symbol));
+  return {
+    baseUrl,
+    tickers: payload
+      .map((ticker) => ({
+        symbol: ticker.symbol,
+        lastPrice: parseNumber(ticker.lastPrice),
+        changePercent: parseNumber(ticker.priceChangePercent),
+        quoteVolume: parseNumber(ticker.quoteVolume),
+      }))
+      .filter(
+        (ticker) =>
+          typeof ticker.symbol === 'string' && ticker.symbol.length > 0,
+      )
+      .sort((a, b) => a.symbol.localeCompare(b.symbol)),
+  };
 }
 
 async function fetchBybitTickers() {
@@ -144,15 +185,10 @@ async function fetchBybitTickers() {
 }
 
 async function fetchBinanceOrderBook(symbol) {
-  const url = new URL('/api/v3/depth', BINANCE_BASE_URL);
-  url.searchParams.set('symbol', symbol);
-  url.searchParams.set('limit', String(ORDER_BOOK_LEVELS));
-  url.searchParams.set('_', String(Date.now()));
-
-  const response = await fetch(url.toString(), { cache: 'no-store' });
-  if (!response.ok) {
-    throw new Error(`Falha Binance order book: HTTP ${response.status}`);
-  }
+  const { response } = await fetchBinanceUrl('/api/v3/depth', {
+    symbol,
+    limit: ORDER_BOOK_LEVELS,
+  });
 
   const payload = await response.json();
 
@@ -188,16 +224,11 @@ async function fetchBybitOrderBook(symbol) {
 }
 
 async function fetchBinanceCandle(symbol, interval) {
-  const url = new URL('/api/v3/klines', BINANCE_BASE_URL);
-  url.searchParams.set('symbol', symbol);
-  url.searchParams.set('interval', interval);
-  url.searchParams.set('limit', '1');
-  url.searchParams.set('_', String(Date.now()));
-
-  const response = await fetch(url.toString(), { cache: 'no-store' });
-  if (!response.ok) {
-    throw new Error(`Falha Binance candle: HTTP ${response.status}`);
-  }
+  const { response } = await fetchBinanceUrl('/api/v3/klines', {
+    symbol,
+    interval,
+    limit: '1',
+  });
 
   const payload = await response.json();
   if (!Array.isArray(payload) || payload.length === 0) {
@@ -242,7 +273,11 @@ export default function MarketOverview() {
   const [pairPages, setPairPages] = useState(INITIAL_PAGES);
   const [pairsStatus, setPairsStatus] = useState('idle');
   const [pairsError, setPairsError] = useState('');
+  const [pairsNotice, setPairsNotice] = useState('');
   const [lastPairsUpdate, setLastPairsUpdate] = useState(null);
+  const [binanceActiveUrl, setBinanceActiveUrl] = useState(
+    BINANCE_BASE_URLS[0],
+  );
 
   const [selectedExchangeKey, setSelectedExchangeKey] = useState(
     EXCHANGES[0].key,
@@ -351,6 +386,7 @@ export default function MarketOverview() {
   const loadPairs = useCallback(async () => {
     setPairsStatus('loading');
     setPairsError('');
+    setPairsNotice('');
 
     const [binanceResult, bybitResult] = await Promise.allSettled([
       fetchBinanceTickers(),
@@ -363,24 +399,37 @@ export default function MarketOverview() {
     if (!hasBinance && !hasBybit) {
       setPairsStatus('error');
       setPairsError(
-        'Nao foi possivel carregar os pares de Binance e Bybit no momento. Mantendo a ultima leitura.',
+        'Binance e Bybit nao responderam no momento. Verifique sua conexao e tente novamente.',
       );
       return;
     }
 
+    if (!hasBinance && hasBybit) {
+      setSelectedExchangeKey((current) =>
+        current === 'binance' ? 'bybit' : current,
+      );
+    }
+
+    if (!hasBybit && hasBinance) {
+      setSelectedExchangeKey((current) =>
+        current === 'bybit' ? 'binance' : current,
+      );
+    }
+
+    if (hasBinance) {
+      setBinanceActiveUrl(binanceResult.value.baseUrl);
+    }
+
     setPairsByExchange((previous) => ({
-      binance: hasBinance ? binanceResult.value : previous.binance,
+      binance: hasBinance ? binanceResult.value.tickers : previous.binance,
       bybit: hasBybit ? bybitResult.value : previous.bybit,
     }));
 
     setLastPairsUpdate(new Date());
     setPairsStatus('ok');
 
-    if (!hasBinance || !hasBybit) {
-      setPairsError(
-        'Uma exchange nao respondeu agora. Exibindo os pares que estao disponiveis.',
-      );
-    }
+    // Fallback silencioso: se apenas uma exchange falhar e a outra responder,
+    // exibimos os dados disponíveis sem manter aviso persistente na interface.
   }, []);
 
   const loadOrderBook = useCallback(async () => {
@@ -416,6 +465,21 @@ export default function MarketOverview() {
 
     return () => clearInterval(intervalId);
   }, [loadPairs]);
+
+  useEffect(() => {
+    const selectedExchangePairs = pairsByExchange[selectedExchangeKey] || [];
+    if (selectedExchangePairs.length > 0) {
+      return;
+    }
+
+    const fallbackExchange = EXCHANGES.find(
+      (exchange) => (pairsByExchange[exchange.key] || []).length > 0,
+    );
+
+    if (fallbackExchange && fallbackExchange.key !== selectedExchangeKey) {
+      setSelectedExchangeKey(fallbackExchange.key);
+    }
+  }, [pairsByExchange, selectedExchangeKey]);
 
   useEffect(() => {
     const pairs = pairsByExchange[selectedExchangeKey] || [];
@@ -602,6 +666,10 @@ export default function MarketOverview() {
       <div className='dashboard-toolbar'>
         <div className='dashboard-meta'>
           <p>{lastUpdateLabel}</p>
+          <p style={{ fontSize: '0.85rem', color: '#888', marginTop: '4px' }}>
+            Binance:{' '}
+            {formatSourceLabel(binanceActiveUrl)}
+          </p>
         </div>
 
         <div className='dashboard-filters'>
@@ -663,6 +731,7 @@ export default function MarketOverview() {
       </div>
 
       {pairsError && <p className='dashboard-error'>{pairsError}</p>}
+      {pairsNotice && <p className='dashboard-notice'>{pairsNotice}</p>}
 
       <div className='dashboard-grid'>
         <article className='dashboard-card'>
