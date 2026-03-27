@@ -8,7 +8,7 @@ Aplicacao React + Vite para exibicao de dados publicos das exchanges Binance e B
 - Livro de ofertas (bids/asks)
 - Lista de pares por exchange com paginacao
 - Gesture mobile de swipe horizontal nas listas para trocar pagina
-- Navegacao entre as paginas `Inicio`, `Mercado` e `Transacoes`
+- Navegacao entre as paginas `Inicio` e `Mercado`
 
 ## Desenvolvimento Web
 

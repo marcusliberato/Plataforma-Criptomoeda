@@ -1,7 +1,11 @@
 import './MercadoPage.css';
 import MarketOverview from './MarketOverview.jsx';
+import NavigationMenu from './NavigationMenu.jsx';
+import useSwipeNavigation from '../hooks/useSwipeNavigation.jsx';
 
 export default function MercadoPage() {
+  useSwipeNavigation();
+
   return (
     <div className='app page-shell'>
       <header className='hero page-header'>
@@ -20,9 +24,6 @@ export default function MercadoPage() {
             </a>
             <a className='ghost-button nav-link active' href='/mercado.html'>
               Mercado
-            </a>
-            <a className='ghost-button nav-link' href='/transacoes.html'>
-              Transações
             </a>
           </div>
         </nav>
@@ -44,6 +45,7 @@ export default function MercadoPage() {
           </div>
 
           <MarketOverview />
+          <NavigationMenu />
         </section>
       </main>
 
@@ -56,7 +58,6 @@ export default function MercadoPage() {
         <div className='footer-links'>
           <a href='/'>Início</a>
           <a href='/mercado.html'>Mercado</a>
-          <a href='/transacoes.html'>Transações</a>
         </div>
       </footer>
     </div>

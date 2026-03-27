@@ -1,7 +1,12 @@
 import './App.css';
 import MarketOverview from './components/MarketOverview.jsx';
+import MobileCameraSection from './components/MobileCameraSection.jsx';
+import NavigationMenu from './components/NavigationMenu.jsx';
+import useSwipeNavigation from './hooks/useSwipeNavigation.jsx';
 
 export default function App() {
+  useSwipeNavigation();
+
   return (
     <div className='app page-shell'>
       <header className='hero page-header'>
@@ -21,9 +26,6 @@ export default function App() {
             <a className='ghost-button nav-link' href='/mercado.html'>
               Mercado
             </a>
-            <a className='ghost-button nav-link' href='/transacoes.html'>
-              Transações
-            </a>
           </div>
         </nav>
       </header>
@@ -41,6 +43,8 @@ export default function App() {
           </div>
 
           <MarketOverview />
+          <MobileCameraSection />
+          <NavigationMenu />
         </section>
       </main>
 
@@ -53,7 +57,6 @@ export default function App() {
         <div className='footer-links'>
           <a href='/'>Início</a>
           <a href='/mercado.html'>Mercado</a>
-          <a href='/transacoes.html'>Transações</a>
         </div>
       </footer>
     </div>

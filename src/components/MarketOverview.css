@@ -8,6 +8,29 @@
   gap: 14px;
 }
 
+.dashboard-card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.dashboard-period-select {
+  display: grid;
+  gap: 6px;
+  text-align: right;
+  font-size: 0.85rem;
+  color: #5f6576;
+}
+
+.dashboard-period-select select {
+  border: 1px solid #d9def0;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 10px 12px;
+}
+
 .dashboard-meta {
   display: grid;
   gap: 4px;
@@ -246,6 +269,24 @@
 .pairs-pagination span {
   font-size: 0.8rem;
   color: #4b5563;
+}
+
+.refresh-indicator {
+  display: grid;
+  place-items: center;
+  color: #4f46e5;
+  font-weight: 600;
+  transition:
+    height 0.2s ease,
+    opacity 0.2s ease;
+  overflow: hidden;
+}
+
+.pairs-card-note {
+  margin: 0;
+  padding: 0 4px;
+  color: #6b7280;
+  font-size: 0.8rem;
 }
 
 .nav-link.active {

@@ -11,6 +11,11 @@ const EXCHANGES = [
   { key: 'bybit', label: 'Bybit' },
 ];
 
+const PERIODS = [
+  { key: '1h', label: '1H', binanceInterval: '1h', bybitInterval: '1h' },
+  { key: '1d', label: '1D', binanceInterval: '1d', bybitInterval: '1d' },
+];
+
 const PAIRS_PER_PAGE = 8;
 const ORDER_BOOK_LEVELS = 10;
 
@@ -83,7 +88,8 @@ function normalizeOrderLevels(levels) {
 
 async function fetchBinanceTickers() {
   const url = new URL('/api/v3/ticker/24hr', BINANCE_BASE_URL);
-  const response = await fetch(url.toString());
+  url.searchParams.set('_', String(Date.now()));
+  const response = await fetch(url.toString(), { cache: 'no-store' });
 
   if (!response.ok) {
     throw new Error(`Falha Binance: HTTP ${response.status}`);
@@ -110,8 +116,9 @@ async function fetchBinanceTickers() {
 async function fetchBybitTickers() {
   const url = new URL('/v5/market/tickers', BYBIT_BASE_URL);
   url.searchParams.set('category', 'spot');
+  url.searchParams.set('_', String(Date.now()));
 
-  const response = await fetch(url.toString());
+  const response = await fetch(url.toString(), { cache: 'no-store' });
   if (!response.ok) {
     throw new Error(`Falha Bybit: HTTP ${response.status}`);
   }
@@ -140,8 +147,9 @@ async function fetchBinanceOrderBook(symbol) {
   const url = new URL('/api/v3/depth', BINANCE_BASE_URL);
   url.searchParams.set('symbol', symbol);
   url.searchParams.set('limit', String(ORDER_BOOK_LEVELS));
+  url.searchParams.set('_', String(Date.now()));
 
-  const response = await fetch(url.toString());
+  const response = await fetch(url.toString(), { cache: 'no-store' });
   if (!response.ok) {
     throw new Error(`Falha Binance order book: HTTP ${response.status}`);
   }
@@ -159,8 +167,9 @@ async function fetchBybitOrderBook(symbol) {
   url.searchParams.set('category', 'spot');
   url.searchParams.set('symbol', symbol);
   url.searchParams.set('limit', String(ORDER_BOOK_LEVELS));
+  url.searchParams.set('_', String(Date.now()));
 
-  const response = await fetch(url.toString());
+  const response = await fetch(url.toString(), { cache: 'no-store' });
   if (!response.ok) {
     throw new Error(`Falha Bybit order book: HTTP ${response.status}`);
   }
@@ -178,6 +187,56 @@ async function fetchBybitOrderBook(symbol) {
   };
 }
 
+async function fetchBinanceCandle(symbol, interval) {
+  const url = new URL('/api/v3/klines', BINANCE_BASE_URL);
+  url.searchParams.set('symbol', symbol);
+  url.searchParams.set('interval', interval);
+  url.searchParams.set('limit', '1');
+  url.searchParams.set('_', String(Date.now()));
+
+  const response = await fetch(url.toString(), { cache: 'no-store' });
+  if (!response.ok) {
+    throw new Error(`Falha Binance candle: HTTP ${response.status}`);
+  }
+
+  const payload = await response.json();
+  if (!Array.isArray(payload) || payload.length === 0) {
+    throw new Error('Falha Binance candle: formato de dados invalido');
+  }
+
+  const candle = payload[0];
+  return {
+    open: parseNumber(candle[1]),
+    close: parseNumber(candle[4]),
+  };
+}
+
+async function fetchBybitCandle(symbol, interval) {
+  const url = new URL('/v5/market/kline', BYBIT_BASE_URL);
+  url.searchParams.set('category', 'spot');
+  url.searchParams.set('symbol', symbol);
+  url.searchParams.set('interval', interval);
+  url.searchParams.set('limit', '1');
+  url.searchParams.set('_', String(Date.now()));
+
+  const response = await fetch(url.toString(), { cache: 'no-store' });
+  if (!response.ok) {
+    throw new Error(`Falha Bybit candle: HTTP ${response.status}`);
+  }
+
+  const payload = await response.json();
+  const list = payload?.result?.list;
+  if (payload?.retCode !== 0 || !Array.isArray(list) || list.length === 0) {
+    throw new Error('Falha Bybit candle: formato de dados invalido');
+  }
+
+  const candle = list[0];
+  return {
+    open: parseNumber(candle[1]),
+    close: parseNumber(candle[4]),
+  };
+}
+
 export default function MarketOverview() {
   const [pairsByExchange, setPairsByExchange] = useState(INITIAL_PAIRS);
   const [pairPages, setPairPages] = useState(INITIAL_PAGES);
@@ -189,11 +248,20 @@ export default function MarketOverview() {
     EXCHANGES[0].key,
   );
   const [selectedPairSymbol, setSelectedPairSymbol] = useState('');
+  const [selectedPeriodKey, setSelectedPeriodKey] = useState('1h');
+
+  const [candleData, setCandleData] = useState({ open: 0, close: 0 });
+  const [candleStatus, setCandleStatus] = useState('idle');
+  const [candleError, setCandleError] = useState('');
 
   const [orderBook, setOrderBook] = useState({ bids: [], asks: [] });
   const [orderBookStatus, setOrderBookStatus] = useState('idle');
   const [orderBookError, setOrderBookError] = useState('');
+  const [refreshDistance, setRefreshDistance] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [refreshHint, setRefreshHint] = useState('Puxe para atualizar');
   const pairSwipeStartRef = useRef({});
+  const refreshStartRef = useRef(null);
 
   const selectedExchange =
     EXCHANGES.find((exchange) => exchange.key === selectedExchangeKey) ||
@@ -202,6 +270,9 @@ export default function MarketOverview() {
     () => pairsByExchange[selectedExchangeKey] || [],
     [pairsByExchange, selectedExchangeKey],
   );
+
+  const selectedPeriod =
+    PERIODS.find((period) => period.key === selectedPeriodKey) || PERIODS[0];
 
   const selectedTicker = useMemo(
     () =>
@@ -242,6 +313,40 @@ export default function MarketOverview() {
       second: '2-digit',
     })}`;
   }, [lastPairsUpdate]);
+
+  const loadCandle = useCallback(async () => {
+    if (!selectedPairSymbol) {
+      setCandleData({ open: 0, close: 0 });
+      setCandleStatus('idle');
+      setCandleError('');
+      return;
+    }
+
+    setCandleStatus('loading');
+    setCandleError('');
+
+    try {
+      const candle =
+        selectedExchangeKey === 'binance'
+          ? await fetchBinanceCandle(
+              selectedPairSymbol,
+              selectedPeriod.binanceInterval,
+            )
+          : await fetchBybitCandle(
+              selectedPairSymbol,
+              selectedPeriod.bybitInterval,
+            );
+
+      setCandleData(candle);
+      setCandleStatus('ok');
+    } catch (error) {
+      console.error(error);
+      setCandleStatus('error');
+      setCandleError(
+        `Nao foi possivel carregar o preco de abertura/fechamento para ${selectedPairSymbol}.`,
+      );
+    }
+  }, [selectedExchangeKey, selectedPairSymbol, selectedPeriod]);
 
   const loadPairs = useCallback(async () => {
     setPairsStatus('loading');
@@ -362,6 +467,10 @@ export default function MarketOverview() {
     return () => clearInterval(intervalId);
   }, [loadOrderBook]);
 
+  useEffect(() => {
+    loadCandle();
+  }, [loadCandle]);
+
   function setExchangePage(exchangeKey, page, totalPages) {
     const nextPage = Math.min(Math.max(page, 1), totalPages);
 
@@ -409,8 +518,87 @@ export default function MarketOverview() {
     setExchangePage(exchangeKey, currentPage - 1, totalPages);
   }
 
+  function getScrollTop() {
+    return (
+      document.scrollingElement?.scrollTop ||
+      document.documentElement.scrollTop ||
+      0
+    );
+  }
+
+  function handleRefreshTouchStart(event) {
+    if (getScrollTop() > 0 || isRefreshing) {
+      refreshStartRef.current = null;
+      return;
+    }
+
+    const touch = event.touches?.[0];
+    if (!touch) {
+      return;
+    }
+
+    refreshStartRef.current = touch.clientY;
+  }
+
+  function handleRefreshTouchMove(event) {
+    if (refreshStartRef.current === null || isRefreshing) {
+      return;
+    }
+
+    const touch = event.touches?.[0];
+    if (!touch) {
+      return;
+    }
+
+    const distance = Math.min(
+      Math.max(touch.clientY - refreshStartRef.current, 0),
+      120,
+    );
+    setRefreshDistance(distance);
+    setRefreshHint(
+      distance >= 80 ? 'Solte para atualizar' : 'Puxe para atualizar',
+    );
+  }
+
+  async function handleRefreshTouchEnd() {
+    if (refreshStartRef.current === null || isRefreshing) {
+      setRefreshDistance(0);
+      return;
+    }
+
+    const distance = refreshDistance;
+    refreshStartRef.current = null;
+    setRefreshDistance(0);
+
+    if (distance < 80) {
+      setRefreshHint('Puxe para atualizar');
+      return;
+    }
+
+    setIsRefreshing(true);
+    setRefreshHint('Atualizando...');
+
+    try {
+      await Promise.all([loadPairs(), loadOrderBook(), loadCandle()]);
+      setRefreshHint('Dados atualizados');
+    } finally {
+      setIsRefreshing(false);
+      window.setTimeout(() => setRefreshHint('Puxe para atualizar'), 1200);
+    }
+  }
+
   return (
-    <div className='market-dashboard'>
+    <div
+      className='market-dashboard'
+      onTouchStart={handleRefreshTouchStart}
+      onTouchMove={handleRefreshTouchMove}
+      onTouchEnd={handleRefreshTouchEnd}
+      style={{
+        transform: refreshDistance
+          ? `translateY(${refreshDistance}px)`
+          : undefined,
+      }}
+    >
       <div className='dashboard-toolbar'>
         <div className='dashboard-meta'>
           <p>{lastUpdateLabel}</p>
@@ -464,11 +652,36 @@ export default function MarketOverview() {
         </div>
       </div>
 
+      <div
+        className='refresh-indicator'
+        style={{
+          height: refreshDistance || isRefreshing ? '38px' : '0px',
+          opacity: refreshDistance || isRefreshing ? 1 : 0,
+        }}
+      >
+        {isRefreshing ? 'Atualizando dados...' : refreshHint}
+      </div>
+
       {pairsError && <p className='dashboard-error'>{pairsError}</p>}
 
       <div className='dashboard-grid'>
         <article className='dashboard-card'>
-          <p className='dashboard-card-tag'>Último preço</p>
+          <div className='dashboard-card-header-row'>
+            <p className='dashboard-card-tag'>Último preço</p>
+            <label className='dashboard-period-select'>
+              <span>Período</span>
+              <select
+                value={selectedPeriodKey}
+                onChange={(event) => setSelectedPeriodKey(event.target.value)}
+              >
+                {PERIODS.map((period) => (
+                  <option key={period.key} value={period.key}>
+                    {period.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
           {selectedTicker ? (
             <>
               <h3>
@@ -487,6 +700,24 @@ export default function MarketOverview() {
               <p className='dashboard-volume'>
                 Volume: {formatVolume(selectedTicker.quoteVolume)}
               </p>
+              <div className='dashboard-candle-info'>
+                {candleStatus === 'loading' ? (
+                  <p>Carregando abert./fechamento...</p>
+                ) : candleStatus === 'error' ? (
+                  <p className='dashboard-error'>{candleError}</p>
+                ) : (
+                  <>
+                    <p>
+                      Abertura ({selectedPeriod.label}): US${' '}
+                      {formatPrice(candleData.open)}
+                    </p>
+                    <p>
+                      Fechamento ({selectedPeriod.label}): US${' '}
+                      {formatPrice(candleData.close)}
+                    </p>
+                  </>
+                )}
+              </div>
             </>
           ) : (
             <p className='dashboard-empty'>
@@ -578,6 +809,10 @@ export default function MarketOverview() {
                 <h4>{exchangeData.label}</h4>
                 <span>{exchangeData.totalPairs} pares</span>
               </div>
+
+              <p className='pairs-card-note'>
+                Deslize na lista para trocar de página de pares.
+              </p>
 
               <div className='pairs-list'>
                 {exchangeData.pairs.length ? (
