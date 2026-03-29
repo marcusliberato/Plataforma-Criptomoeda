@@ -9,10 +9,9 @@
 
 .nav {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
 }
 
 .brand {
@@ -47,7 +46,29 @@
 
 .nav-actions {
   display: flex;
+  align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
+  align-self: flex-end;
+  justify-content: flex-end;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  text-decoration: none;
+}
+
+.header-project {
+  margin: 0;
+  align-self: flex-start;
+  font-size: clamp(1.2rem, 2.6vw, 1.8rem);
+  font-weight: 700;
+  color: #1f2a56;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .nav-link.active {
@@ -473,6 +494,11 @@
   color: #4f46e5;
 }
 
+.ghost-button:not(:disabled):hover {
+  background: #dfe4ff;
+  color: #3730a3;
+}
+
 .ghost-button:disabled {
   opacity: 0.65;
   cursor: not-allowed;
@@ -486,6 +512,16 @@
 
 .page-header {
   padding: 20px 20px 12px;
+}
+
+.page-header-user {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.page-header-platform {
+  display: flex;
+  justify-content: flex-start;
 }
 
 .page-main {
@@ -509,6 +545,45 @@
   .hero-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: center;
+  }
+
+  .nav {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      "brand project actions"
+      "badge project platform";
+    align-items: start;
+    column-gap: 28px;
+    row-gap: 10px;
+  }
+
+  .brand {
+    grid-area: brand;
+  }
+
+  .header-project {
+    grid-area: project;
+    align-self: start;
+    justify-self: center;
+    margin-top: 4px;
+  }
+
+  .nav-actions {
+    grid-area: actions;
+    align-self: start;
+  }
+
+  .page-header-user {
+    grid-area: badge;
+    margin-top: 6px;
+  }
+
+  .page-header-platform {
+    grid-area: platform;
+    justify-self: end;
+    align-self: start;
+    margin-top: 6px;
   }
 
   .section {
@@ -547,6 +622,7 @@
   .page-header {
     padding: 28px 60px 16px;
   }
+
 }
 
 @media (min-width: 1024px) {

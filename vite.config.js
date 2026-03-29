@@ -5,6 +5,9 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: {
+    host: true,
+    port: 5173,
+    strictPort: true,
     proxy: {
       '/market-proxy': {
         target: 'https://api.binance.com',
@@ -16,6 +19,10 @@ export default defineConfig({
         target: 'https://api.binance.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/binance-proxy/, ''),
+      },
+      '/api': {
+        target: 'http://localhost:8787',
+        changeOrigin: true,
       },
     },
   },
