@@ -36,6 +36,7 @@ export default defineConfig({
       input: {
         main: 'index.html',
         mercado: 'mercado.html',
+        imagens: 'imagens.html',
       },
     },
   },

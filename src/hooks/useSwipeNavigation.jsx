@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const routeOrder = ['/', '/mercado.html'];
+const routeOrder = ['/', '/mercado.html', '/imagens.html'];
 
 function normalizePath(pathname) {
   const path = pathname.replace(/\\/g, '/');

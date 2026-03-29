@@ -1,0 +1,17 @@
+.images-page-grid {
+  display: grid;
+  gap: 24px;
+}
+
+.images-page-grid .camera-shell {
+  width: 100%;
+  min-width: 0;
+  margin-top: 0;
+}
+
+@media (min-width: 980px) {
+  .images-page-grid {
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.9fr);
+    align-items: start;
+  }
+}

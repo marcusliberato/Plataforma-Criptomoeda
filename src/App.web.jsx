@@ -30,6 +30,9 @@ export default function App() {
                 <a className='ghost-button nav-link' href='/mercado.html'>
                   Mercado
                 </a>
+                <a className='ghost-button nav-link' href='/imagens.html'>
+                  Imagens
+                </a>
                 <button className='ghost-button nav-link' type='button' onClick={logout}>
                   Sair
                 </button>
@@ -69,6 +72,7 @@ export default function App() {
             <div className='footer-links'>
               <a href='/'>Início</a>
               <a href='/mercado.html'>Mercado</a>
+              <a href='/imagens.html'>Imagens</a>
             </div>
           </footer>
         </div>

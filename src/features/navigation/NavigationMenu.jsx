@@ -3,6 +3,7 @@ import './NavigationMenu.css';
 const routes = [
   { label: 'Início', href: '/' },
   { label: 'Mercado', href: '/mercado.html' },
+  { label: 'Imagens', href: '/imagens.html' },
 ];
 
 function normalizePath(pathname) {
