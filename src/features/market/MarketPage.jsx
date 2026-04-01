@@ -8,7 +8,7 @@ export default function MarketPage() {
   useSwipeNavigation();
 
   return (
-    <AuthGate title='Entrar no mercado' description='Autentique-se para acompanhar pares, preços e livro de ofertas em tempo real.'>
+    <AuthGate unauthenticatedMode='redirect'>
       {({ username, logout }) => (
         <div className='app page-shell'>
           <header className='hero page-header'>

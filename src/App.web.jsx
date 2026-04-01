@@ -8,7 +8,7 @@ export default function App() {
   useSwipeNavigation();
 
   return (
-    <AuthGate title='Entrar na plataforma' description='Realize login para acessar as páginas internas.'>
+    <AuthGate title='Acessar conta' description=''>
       {({ username, logout }) => (
         <div className='app page-shell'>
           <header className='hero page-header'>

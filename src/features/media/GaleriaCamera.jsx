@@ -1,28 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import * as ImagePicker from './imagePicker.web.js';
 import './MediaPanel.css';
 
-export default function GaleriaCamera() {
-  const platform = 'web';
-  const [imageUri, setImageUri] = useState(null);
-  const [statusMessage, setStatusMessage] = useState(
-    'Use o botão abaixo para selecionar uma imagem com o Image Picker.',
-  );
-  const objectUrlRef = useRef('');
-
-  function updateImageUri(nextUri) {
-    if (objectUrlRef.current) {
-      URL.revokeObjectURL(objectUrlRef.current);
-      objectUrlRef.current = '';
-    }
-
-    if (typeof nextUri === 'string' && nextUri.startsWith('blob:')) {
-      objectUrlRef.current = nextUri;
-    }
-
-    setImageUri(nextUri || null);
-  }
-
+export default function GaleriaCamera({
+  imageItems = [],
+  selectedImageIds = [],
+  statusMessage = '',
+  onImageAdd,
+  onImageSelectionToggle,
+  onDeleteSelectedImages,
+}) {
   useEffect(() => {
     const body = document.body;
     body.classList.remove('platform-ios', 'platform-android', 'platform-web');
@@ -33,25 +20,14 @@ export default function GaleriaCamera() {
     };
   }, []);
 
-  useEffect(
-    () => () => {
-      if (objectUrlRef.current) {
-        URL.revokeObjectURL(objectUrlRef.current);
-      }
-    },
-    [],
-  );
-
   async function escolherImagem() {
     try {
-      setStatusMessage('Abrindo Image Picker...');
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
         window.alert('Permissão negada');
-        setStatusMessage(
-          platform === 'android'
-            ? 'Permissão negada no Android. Habilite mídia/imagens nas configurações do app.'
-            : 'Não foi possível liberar o acesso à galeria.',
+        onImageAdd?.(
+          null,
+          'Não foi possível liberar o acesso à galeria.',
         );
         return;
       }
@@ -61,52 +37,70 @@ export default function GaleriaCamera() {
         allowsEditing: true,
         quality: 1,
       });
+
       if (!result.canceled) {
-        updateImageUri(result.assets[0].uri);
-        setStatusMessage('Imagem selecionada com o Image Picker.');
+        onImageAdd?.(
+          {
+            id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+            uri: result.assets[0].uri,
+            source: 'gallery',
+          },
+          'Imagem adicionada à galeria.',
+        );
         return;
       }
 
-      setStatusMessage('Nenhuma imagem foi selecionada.');
+      onImageAdd?.(null, '');
     } catch (error) {
       console.error(error);
-      setStatusMessage('Não foi possível abrir o Image Picker no dispositivo.');
+      onImageAdd?.(null, 'Não foi possível abrir o Image Picker no dispositivo.');
     }
   }
 
   return (
     <section className='mobile-device-section'>
-      <div className='mobile-device-header'>
+      <div className='mobile-device-header mobile-device-header-centered'>
         <div>
-          <p className='section-tag'>Recursos nativos</p>
-          <h2>Galeria com Image Picker</h2>
-          <p className='market-meta'>
-            Exemplo de seleção de imagem da galeria usando a interface do Image Picker.
-          </p>
+          <h2>Galeria de Imagens</h2>
+          <p>Selecione uma imagem do dispositivo.</p>
         </div>
       </div>
-
-      <p className='platform-help'>
-        {platform === 'ios'
-          ? 'No iOS, a galeria segue o fluxo de permissões do sistema.'
-          : null}
-        {platform === 'android'
-          ? 'No Android, o app solicita acesso à mídia antes do uso.'
-          : null}
-        {platform === 'web'
-          ? 'Na Web, a seleção depende do navegador.'
-          : null}
-      </p>
 
       <div className='mobile-device-actions'>
         <button className='ghost-button' type='button' onClick={escolherImagem}>
           Escolher imagem
         </button>
+        <button
+          className='ghost-button gallery-delete-button'
+          type='button'
+          onClick={onDeleteSelectedImages}
+          disabled={!selectedImageIds.length}
+        >
+          Apagar selecionadas
+        </button>
       </div>
 
-      <div className='mobile-device-preview'>
-        {imageUri ? (
-          <img src={imageUri} alt='Imagem do dispositivo' />
+      <div className='mobile-device-preview mobile-device-gallery'>
+        {imageItems.length ? (
+          <div className='mobile-device-grid'>
+            {imageItems.map((imageItem, index) => (
+              <button
+                className={`mobile-device-thumb ${
+                  selectedImageIds.includes(imageItem.id) ? 'is-selected' : ''
+                }`}
+                key={imageItem.id}
+                type='button'
+                onClick={() => onImageSelectionToggle?.(imageItem.id)}
+                aria-pressed={selectedImageIds.includes(imageItem.id)}
+                aria-label={`Selecionar imagem ${index + 1} da galeria`}
+              >
+                <img
+                  src={imageItem.uri}
+                  alt={`Imagem ${index + 1} da galeria`}
+                />
+              </button>
+            ))}
+          </div>
         ) : (
           <div className='mobile-device-empty'>
             Nenhuma imagem selecionada ainda.
@@ -114,7 +108,7 @@ export default function GaleriaCamera() {
         )}
       </div>
 
-      <p className='mobile-device-status'>{statusMessage}</p>
+      {statusMessage ? <p className='mobile-device-status'>{statusMessage}</p> : null}
     </section>
   );
 }

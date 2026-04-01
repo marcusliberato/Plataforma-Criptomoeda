@@ -18,13 +18,41 @@ function normalizeApiBase(base) {
   return String(base || '').trim().replace(/\/$/, '');
 }
 
-function getApiBaseUrl() {
+function isPrivateNetworkHostname(hostname) {
+  if (!hostname) {
+    return false;
+  }
+
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return true;
+  }
+
+  return /^(10|192\.168|172\.(1[6-9]|2\d|3[0-1]))\./.test(hostname);
+}
+
+export function getApiBaseUrl() {
   const envBase = normalizeApiBase(import.meta.env.VITE_AUTH_API_BASE_URL);
   if (envBase) {
     return envBase;
   }
 
-  return window.location.origin;
+  const { protocol, hostname, port, origin } = window.location;
+  const isHttpProtocol = protocol === 'http:' || protocol === 'https:';
+  const usesViteProxy = port === '5173' || port === '4173';
+
+  if (isHttpProtocol && usesViteProxy) {
+    return origin;
+  }
+
+  if (isHttpProtocol && isPrivateNetworkHostname(hostname)) {
+    return `${protocol}//${hostname}:8787`;
+  }
+
+  if (isHttpProtocol && origin && origin !== 'null') {
+    return origin;
+  }
+
+  return 'http://localhost:8787';
 }
 
 function getApiUrl(path) {
@@ -130,7 +158,7 @@ export async function signIn(username, password) {
     });
     return {
       ok: false,
-      error: 'Não foi possível conectar ao servidor de autenticação.',
+      error: `Não foi possível conectar ao servidor de autenticação (${apiUrl}).`,
     };
   }
 

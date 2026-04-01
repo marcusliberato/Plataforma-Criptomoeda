@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import '../../App.css';
 import AuthGate from '../auth/AuthGate.jsx';
 import NavigationMenu from '../navigation/NavigationMenu.jsx';
@@ -8,11 +9,78 @@ import './ImagesPage.css';
 
 export default function ImagesPage() {
   useSwipeNavigation();
+  const [galleryImages, setGalleryImages] = useState([]);
+  const [galleryStatusMessage, setGalleryStatusMessage] = useState('');
+  const [selectedImageIds, setSelectedImageIds] = useState([]);
+  const galleryImagesRef = useRef([]);
+
+  useEffect(() => {
+    galleryImagesRef.current = galleryImages;
+  }, [galleryImages]);
+
+  useEffect(
+    () => () => {
+      galleryImagesRef.current.forEach((imageItem) => {
+        if (imageItem.uri.startsWith('blob:')) {
+          URL.revokeObjectURL(imageItem.uri);
+        }
+      });
+    },
+    [],
+  );
+
+  function handleGalleryImageAdd(nextImage, nextStatus) {
+    if (nextImage) {
+      setGalleryImages((currentImages) => [...currentImages, nextImage]);
+    }
+
+    if (nextStatus) {
+      setGalleryStatusMessage(nextStatus);
+    }
+  }
+
+  function handleCameraCapture(photoUri) {
+    handleGalleryImageAdd(
+      {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        uri: photoUri,
+        source: 'camera',
+      },
+      '',
+    );
+  }
+
+  function handleImageSelectionToggle(imageId) {
+    setSelectedImageIds((currentIds) =>
+      currentIds.includes(imageId)
+        ? currentIds.filter((currentId) => currentId !== imageId)
+        : [...currentIds, imageId],
+    );
+  }
+
+  function handleDeleteSelectedImages() {
+    if (!selectedImageIds.length) {
+      return;
+    }
+
+    setGalleryImages((currentImages) => {
+      currentImages.forEach((imageItem) => {
+        if (selectedImageIds.includes(imageItem.id) && imageItem.uri.startsWith('blob:')) {
+          URL.revokeObjectURL(imageItem.uri);
+        }
+      });
+
+      return currentImages.filter((imageItem) => !selectedImageIds.includes(imageItem.id));
+    });
+
+    setSelectedImageIds([]);
+    setGalleryStatusMessage('');
+    window.alert('Imagens selecionadas removidas da galeria.');
+  }
 
   return (
     <AuthGate
-      title='Entrar na área de imagens'
-      description='Autentique-se para acessar os recursos de câmera e galeria.'
+      unauthenticatedMode='redirect'
     >
       {({ username, logout }) => (
         <div className='app page-shell'>
@@ -60,8 +128,15 @@ export default function ImagesPage() {
               </div>
 
               <div className='images-page-grid'>
-                <GaleriaCamera />
-                <Camera />
+                <GaleriaCamera
+                  imageItems={galleryImages}
+                  selectedImageIds={selectedImageIds}
+                  statusMessage={galleryStatusMessage}
+                  onImageAdd={handleGalleryImageAdd}
+                  onImageSelectionToggle={handleImageSelectionToggle}
+                  onDeleteSelectedImages={handleDeleteSelectedImages}
+                />
+                <Camera onCapture={handleCameraCapture} />
               </div>
 
               <NavigationMenu />
