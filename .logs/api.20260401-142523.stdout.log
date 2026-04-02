@@ -1,0 +1,6 @@
+
+> criptmoeda-expo@1.0.0 api
+> node server/index.js
+
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  override existing env vars with { override: true }
+[auth-api] Rodando em http://localhost:8787 (pid: 11244)

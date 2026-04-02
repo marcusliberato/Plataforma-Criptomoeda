@@ -1,0 +1,6 @@
+
+> criptmoeda-expo@1.0.0 api
+> node server/index.js
+
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[auth-api] Rodando em http://localhost:8787 (pid: 2880)

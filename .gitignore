@@ -1,0 +1,8 @@
+node_modules
+dist
+.expo
+.expo-web-build
+.pnpm-store
+android
+ios
+.env

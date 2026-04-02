@@ -1,0 +1,41 @@
+{
+  "name": "criptmoeda-expo",
+  "private": true,
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "api": "node server/index.js",
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "vite --host 0.0.0.0 --port 8081",
+    "web:expo": "expo start --web",
+    "build": "vite build",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "expo": "55.0.10-canary-20260328-bdc6273",
+    "expo-camera": "55.0.12-canary-20260328-bdc6273",
+    "expo-image-picker": "55.0.15-canary-20260328-bdc6273",
+    "expo-status-bar": "55.0.5-canary-20260328-bdc6273",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-native": "0.83.4",
+    "react-native-web": "~0.21.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@vitejs/plugin-react": "^5.1.0",
+    "jsdom": "^27.0.1",
+    "vite": "^7.1.7",
+    "vitest": "^3.2.4"
+  }
+}
