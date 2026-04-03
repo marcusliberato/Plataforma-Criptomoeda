@@ -100,7 +100,7 @@ export default function ImagesPage() {
                 </div>
               </div>
 
-              <p className='header-project'>Projeto de Bloco 5</p>
+              <p className='header-project'>Projeto de Bloco</p>
 
               <div className='nav-actions'>
                 <a className='ghost-button nav-link' href='/'>

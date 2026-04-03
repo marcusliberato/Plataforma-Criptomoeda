@@ -115,7 +115,7 @@ export default function AuthGate({
           </div>
 
           <div className='auth-copy'>
-            <p className='auth-kicker'>Projeto de Bloco 5</p>
+            <p className='auth-kicker'>Projeto de Bloco</p>
             <h1>{title}</h1>
             <p className='auth-description'>{description}</p>
           </div>
