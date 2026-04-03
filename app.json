@@ -12,7 +12,12 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Precisamos de acesso à câmera para capturar fotos no aplicativo.",
+        "NSPhotoLibraryUsageDescription": "Precisamos de acesso às fotos para selecionar imagens da galeria.",
+        "NSPhotoLibraryAddUsageDescription": "Precisamos salvar imagens capturadas na sua galeria."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -24,6 +29,21 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Precisamos de acesso à câmera para capturar fotos no aplicativo."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Precisamos de acesso às fotos para selecionar imagens da galeria.",
+          "cameraPermission": "Precisamos de acesso à câmera para capturar fotos no aplicativo."
+        }
+      ]
+    ]
   }
 }

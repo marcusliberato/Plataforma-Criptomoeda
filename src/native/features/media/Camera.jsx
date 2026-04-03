@@ -1,12 +1,29 @@
 import { useRef, useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { platformTheme } from '../../theme/platformTheme.js';
 
 export default function Camera() {
   const [permission, requestPermission] = useCameraPermissions();
   const [photoUri, setPhotoUri] = useState(null);
+  const [permissionMessage, setPermissionMessage] = useState('');
   const cameraRef = useRef(null);
+
+  async function solicitarPermissaoCamera() {
+    const result = await requestPermission();
+    if (!result?.granted && result?.canAskAgain === false) {
+      setPermissionMessage(
+        'Permissão bloqueada. Abra os Ajustes do app para liberar a câmera.',
+      );
+      return;
+    }
+
+    setPermissionMessage('');
+  }
+
+  async function abrirAjustes() {
+    await Linking.openSettings();
+  }
 
   async function tirarFoto() {
     if (!cameraRef.current) {
@@ -25,9 +42,16 @@ export default function Camera() {
     return (
       <View style={styles.wrapper}>
         <Text style={styles.title}>Câmera</Text>
-        <Pressable style={styles.button} onPress={requestPermission}>
-          <Text style={styles.buttonText}>Permitir câmera</Text>
-        </Pressable>
+        {permission?.canAskAgain === false ? (
+          <Pressable style={styles.button} onPress={abrirAjustes}>
+            <Text style={styles.buttonText}>Abrir ajustes do dispositivo</Text>
+          </Pressable>
+        ) : (
+          <Pressable style={styles.button} onPress={solicitarPermissaoCamera}>
+            <Text style={styles.buttonText}>Permitir câmera</Text>
+          </Pressable>
+        )}
+        {permissionMessage ? <Text style={styles.helperText}>{permissionMessage}</Text> : null}
       </View>
     );
   }
@@ -81,5 +105,10 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: platformTheme.controlBorder,
+  },
+  helperText: {
+    color: platformTheme.mutedText,
+    fontSize: 14,
+    lineHeight: 20,
   },
 });

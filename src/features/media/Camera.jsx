@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   CameraView,
   useCameraPermissions,
@@ -11,15 +11,6 @@ export default function Camera({ onCapture }) {
   const [statusMessage, setStatusMessage] = useState('');
   const fileInputRef = useRef(null);
   const cameraRef = useRef(null);
-
-  useEffect(
-    () => () => {
-      if (photoUri?.startsWith('blob:')) {
-        URL.revokeObjectURL(photoUri);
-      }
-    },
-    [photoUri],
-  );
 
   async function tirarFoto() {
     if (!cameraRef.current) {
