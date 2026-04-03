@@ -12,6 +12,7 @@ import {
   formatPercent,
   formatPrice,
 } from './marketData.js';
+import { platformTheme } from '../../theme/platformTheme.js';
 
 export default function MarketHighlights({ onOpenMarket }) {
   const [items, setItems] = useState([]);
@@ -42,7 +43,7 @@ export default function MarketHighlights({ onOpenMarket }) {
         <Text style={styles.subtitle}>Últimas 24h</Text>
       </View>
 
-      {status === 'loading' ? <ActivityIndicator color='#5b63ff' /> : null}
+      {status === 'loading' ? <ActivityIndicator color={platformTheme.accent} /> : null}
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.cards}>
@@ -76,10 +77,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#101828',
+    color: platformTheme.titleText,
   },
   subtitle: {
-    color: '#6b7280',
+    color: platformTheme.mutedText,
     fontWeight: '600',
   },
   cards: {
@@ -88,19 +89,20 @@ const styles = StyleSheet.create({
   },
   card: {
     width: 160,
-    backgroundColor: '#fff',
-    borderRadius: 22,
+    backgroundColor: platformTheme.cardBackground,
+    borderRadius: platformTheme.surfaceRadius,
     padding: 18,
     borderWidth: 1,
-    borderColor: '#ececf4',
+    borderColor: platformTheme.controlBorder,
     gap: 10,
+    ...platformTheme.surfaceShadow,
   },
   symbol: {
     fontSize: 20,
     fontWeight: '700',
   },
   price: {
-    color: '#4b5563',
+    color: platformTheme.mutedText,
     fontSize: 18,
   },
   change: {
@@ -117,7 +119,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   linkText: {
-    color: '#5b36d8',
+    color: platformTheme.accent,
     fontWeight: '700',
     fontSize: 16,
   },

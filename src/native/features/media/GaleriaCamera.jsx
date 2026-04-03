@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { platformTheme } from '../../theme/platformTheme.js';
 
 export default function GaleriaCamera() {
   const [imageUri, setImageUri] = useState(null);
@@ -41,21 +42,26 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: '700',
+    color: platformTheme.titleText,
   },
   button: {
-    backgroundColor: '#eef2ff',
+    backgroundColor: platformTheme.controlBackground,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    borderRadius: 16,
+    borderRadius: platformTheme.controlRadius,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: platformTheme.controlBorder,
   },
   buttonText: {
-    color: '#4f46e5',
+    color: platformTheme.accent,
     fontWeight: '700',
   },
   image: {
     width: '100%',
     height: 220,
-    borderRadius: 20,
+    borderRadius: platformTheme.surfaceRadius,
+    borderWidth: 1,
+    borderColor: platformTheme.controlBorder,
   },
 });

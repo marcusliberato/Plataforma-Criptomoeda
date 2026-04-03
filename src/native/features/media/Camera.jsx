@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import { platformTheme } from '../../theme/platformTheme.js';
 
 export default function Camera() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -60,22 +61,25 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: '700',
+    color: platformTheme.titleText,
   },
   button: {
-    backgroundColor: '#111827',
+    backgroundColor: platformTheme.logoutBackground,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    borderRadius: 16,
+    borderRadius: platformTheme.controlRadius,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
+    color: platformTheme.logoutText,
     fontWeight: '700',
   },
   camera: {
     width: '100%',
     height: 240,
-    borderRadius: 20,
+    borderRadius: platformTheme.surfaceRadius,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: platformTheme.controlBorder,
   },
 });

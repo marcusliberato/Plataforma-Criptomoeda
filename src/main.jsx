@@ -1,8 +1,10 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.web.jsx';
+import { applyWebPlatformClass } from './platform/applyWebPlatformClass.js';
 import './index.css';
 import './styles/index.css';
+import './styles/platform.css';
 
 function attachRuntimeLoggers() {
   window.addEventListener('error', (event) => {
@@ -30,6 +32,7 @@ function attachRuntimeLoggers() {
 }
 
 attachRuntimeLoggers();
+applyWebPlatformClass();
 
 const rootElement = document.getElementById('root');
 

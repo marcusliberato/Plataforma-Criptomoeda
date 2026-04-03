@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import useAuthSession from './useAuthSession.js';
+import { platformTheme } from '../../theme/platformTheme.js';
 
 export default function AuthGate({ children, title, description }) {
   const { isAuthenticated, username, isLoading, isCheckingSession, login, logout } =
@@ -27,7 +28,7 @@ export default function AuthGate({ children, title, description }) {
   if (isCheckingSession) {
     return (
       <SafeAreaView style={styles.centered}>
-        <ActivityIndicator size='large' color='#5b63ff' />
+        <ActivityIndicator size='large' color={platformTheme.accent} />
         <Text style={styles.helperText}>Validando sessão...</Text>
       </SafeAreaView>
     );
@@ -79,51 +80,54 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: 12,
-    backgroundColor: '#f6f7fb',
+    backgroundColor: platformTheme.appBackground,
   },
   helperText: {
-    color: '#51607a',
+    color: platformTheme.mutedText,
   },
   authShell: {
     flex: 1,
-    backgroundColor: '#f6f7fb',
+    backgroundColor: platformTheme.appBackground,
     justifyContent: 'center',
     padding: 24,
   },
   authCard: {
-    backgroundColor: '#fff',
-    borderRadius: 24,
+    backgroundColor: platformTheme.cardBackground,
+    borderRadius: platformTheme.surfaceRadius,
     padding: 24,
     gap: 14,
+    borderWidth: 1,
+    borderColor: platformTheme.controlBorder,
+    ...platformTheme.surfaceShadow,
   },
   brand: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#1f2a56',
+    color: platformTheme.titleText,
   },
   title: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#101828',
+    color: platformTheme.titleText,
   },
   description: {
-    color: '#51607a',
+    color: platformTheme.mutedText,
     lineHeight: 20,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#d6d8e4',
-    borderRadius: 14,
+    borderColor: platformTheme.controlBorder,
+    borderRadius: platformTheme.controlRadius,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    backgroundColor: '#fbfcff',
+    backgroundColor: platformTheme.controlBackground,
   },
   error: {
     color: '#c03838',
   },
   submitButton: {
-    backgroundColor: '#5b63ff',
-    borderRadius: 16,
+    backgroundColor: platformTheme.accent,
+    borderRadius: platformTheme.controlRadius,
     paddingVertical: 14,
     alignItems: 'center',
   },

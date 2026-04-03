@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import * as ImagePicker from './imagePicker.web.js';
 import './MediaPanel.css';
 
@@ -10,16 +9,6 @@ export default function GaleriaCamera({
   onImageSelectionToggle,
   onDeleteSelectedImages,
 }) {
-  useEffect(() => {
-    const body = document.body;
-    body.classList.remove('platform-ios', 'platform-android', 'platform-web');
-    body.classList.add('platform-web');
-
-    return () => {
-      body.classList.remove('platform-web');
-    };
-  }, []);
-
   async function escolherImagem() {
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();

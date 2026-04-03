@@ -1,0 +1,124 @@
+body.platform-web {
+  background: #f4f6fb;
+}
+
+body.platform-ios {
+  background: #eaf4ff;
+}
+
+body.platform-android {
+  background: #eef8f0;
+}
+
+body.platform-web .hero {
+  background: radial-gradient(circle at top, #fdf6ff 0%, #f4f6fb 45%, #eef1f8 100%);
+}
+
+body.platform-ios .hero {
+  background: radial-gradient(circle at top, #e9f3ff 0%, #eef6ff 46%, #e6efff 100%);
+}
+
+body.platform-android .hero {
+  background: radial-gradient(circle at top, #ebf8ef 0%, #f3fbf5 46%, #e7f4ea 100%);
+}
+
+body.platform-web .brand-dot {
+  background: linear-gradient(135deg, #5b63ff, #9f6dff);
+}
+
+body.platform-ios .brand-dot {
+  background: linear-gradient(135deg, #2563eb, #38bdf8);
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.5);
+}
+
+body.platform-android .brand-dot {
+  background: linear-gradient(135deg, #16a34a, #4ade80);
+  box-shadow: 0 0 12px rgba(22, 163, 74, 0.42);
+}
+
+body.platform-web .ghost-button,
+body.platform-web .nav-link.active {
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+body.platform-ios .ghost-button,
+body.platform-ios .nav-link.active {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+body.platform-android .ghost-button,
+body.platform-android .nav-link.active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+body.platform-ios .section-tag {
+  color: #2563eb;
+}
+
+body.platform-android .section-tag {
+  color: #16a34a;
+}
+
+body.platform-ios .user-badge {
+  background: #dbeafe;
+  border-color: #bfdbfe;
+  color: #1e40af;
+}
+
+body.platform-android .user-badge {
+  background: #dcfce7;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+body.platform-web .auth-shell {
+  background:
+    radial-gradient(circle at top, rgba(253, 246, 255, 0.98) 0%, rgba(244, 246, 251, 0.95) 42%, rgba(238, 241, 248, 0.98) 100%);
+}
+
+body.platform-ios .auth-shell {
+  background:
+    radial-gradient(circle at top, rgba(227, 240, 255, 0.98) 0%, rgba(236, 246, 255, 0.96) 46%, rgba(226, 237, 255, 0.98) 100%);
+}
+
+body.platform-android .auth-shell {
+  background:
+    radial-gradient(circle at top, rgba(228, 246, 234, 0.98) 0%, rgba(236, 250, 239, 0.96) 46%, rgba(223, 243, 229, 0.98) 100%);
+}
+
+body.platform-ios .auth-card {
+  border-color: rgba(147, 197, 253, 0.8);
+  box-shadow:
+    0 24px 70px rgba(30, 64, 175, 0.16),
+    0 8px 24px rgba(14, 116, 144, 0.12);
+}
+
+body.platform-android .auth-card {
+  border-color: rgba(134, 239, 172, 0.78);
+  box-shadow:
+    0 24px 70px rgba(21, 128, 61, 0.15),
+    0 8px 24px rgba(22, 163, 74, 0.1);
+  border-radius: 24px;
+}
+
+body.platform-ios .auth-submit {
+  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+}
+
+body.platform-android .auth-submit {
+  background: linear-gradient(135deg, #15803d, #22c55e);
+}
+
+body.platform-ios .navigation-link:hover,
+body.platform-ios .navigation-link.active {
+  background: #2563eb;
+}
+
+body.platform-android .navigation-link:hover,
+body.platform-android .navigation-link.active {
+  background: #16a34a;
+}
+

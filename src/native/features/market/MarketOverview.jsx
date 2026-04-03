@@ -13,6 +13,7 @@ import {
   formatPrice,
   formatVolume,
 } from './marketData.js';
+import { platformTheme } from '../../theme/platformTheme.js';
 
 function ExchangeCard({ title, count, items }) {
   return (
@@ -76,7 +77,7 @@ export default function MarketOverview() {
         </Pressable>
       </View>
 
-      {status === 'loading' ? <ActivityIndicator color='#5b63ff' /> : null}
+      {status === 'loading' ? <ActivityIndicator color={platformTheme.accent} /> : null}
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.grid}>
@@ -99,15 +100,18 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: '700',
+    color: platformTheme.titleText,
   },
   refreshButton: {
-    backgroundColor: '#eef2ff',
+    backgroundColor: platformTheme.controlBackground,
     paddingHorizontal: 14,
     paddingVertical: 10,
-    borderRadius: 14,
+    borderRadius: platformTheme.controlRadius,
+    borderWidth: 1,
+    borderColor: platformTheme.controlBorder,
   },
   refreshText: {
-    color: '#4f46e5',
+    color: platformTheme.accent,
     fontWeight: '700',
   },
   grid: {
@@ -116,12 +120,13 @@ const styles = StyleSheet.create({
   },
   exchangeCard: {
     width: 330,
-    backgroundColor: '#fff',
-    borderRadius: 22,
+    backgroundColor: platformTheme.cardBackground,
+    borderRadius: platformTheme.surfaceRadius,
     padding: 16,
     gap: 12,
     borderWidth: 1,
-    borderColor: '#ececf4',
+    borderColor: platformTheme.controlBorder,
+    ...platformTheme.surfaceShadow,
   },
   exchangeHeader: {
     flexDirection: 'row',
@@ -132,7 +137,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   exchangeCount: {
-    color: '#4f46e5',
+    color: platformTheme.accent,
     fontWeight: '600',
   },
   pairItem: {
@@ -140,16 +145,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#ececf4',
-    borderRadius: 16,
+    borderColor: platformTheme.controlBorder,
+    borderRadius: platformTheme.controlRadius,
     padding: 12,
+    backgroundColor: platformTheme.controlBackground,
   },
   pairSymbol: {
     fontWeight: '700',
     fontSize: 16,
   },
   pairVolume: {
-    color: '#6b7280',
+    color: platformTheme.mutedText,
     marginTop: 4,
   },
   pairPrice: {

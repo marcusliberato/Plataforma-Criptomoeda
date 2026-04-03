@@ -6,6 +6,7 @@ import Camera from './src/native/features/media/Camera.jsx';
 import GaleriaCamera from './src/native/features/media/GaleriaCamera.jsx';
 import MarketHighlights from './src/native/features/market/MarketHighlights.jsx';
 import MarketOverview from './src/native/features/market/MarketOverview.jsx';
+import { platformTheme } from './src/native/theme/platformTheme.js';
 
 function Header({ username, onNavigate, onLogout, currentScreen }) {
   return (
@@ -42,7 +43,10 @@ function Header({ username, onNavigate, onLogout, currentScreen }) {
         </Pressable>
       </View>
 
-      <Text style={styles.userText}>Usuário: {username}</Text>
+      <View style={styles.headerMeta}>
+        <Text style={styles.userText}>Usuário: {username}</Text>
+        <Text style={styles.platformBadge}>App nativo {platformTheme.label}</Text>
+      </View>
     </View>
   );
 }
@@ -106,22 +110,25 @@ export default function App() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f6f7fb',
+    backgroundColor: platformTheme.appBackground,
   },
   header: {
     paddingHorizontal: 20,
-    paddingTop: 12,
+    paddingTop: platformTheme.headerTopPadding,
     paddingBottom: 16,
-    backgroundColor: '#f8f5ff',
+    backgroundColor: platformTheme.headerBackground,
     gap: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: platformTheme.controlBorder,
+    ...platformTheme.surfaceShadow,
   },
   brand: {
     fontSize: 24,
     fontWeight: '800',
-    color: '#1f2a56',
+    color: platformTheme.titleText,
   },
   brandSubtitle: {
-    color: '#667085',
+    color: platformTheme.mutedText,
   },
   headerActions: {
     flexDirection: 'row',
@@ -132,45 +139,64 @@ const styles = StyleSheet.create({
   navButton: {
     paddingHorizontal: 14,
     paddingVertical: 10,
-    borderRadius: 14,
-    backgroundColor: '#ffffff',
+    borderRadius: platformTheme.controlRadius,
+    backgroundColor: platformTheme.controlBackground,
+    borderWidth: 1,
+    borderColor: platformTheme.controlBorder,
   },
   navButtonActive: {
-    backgroundColor: '#dfe4ff',
+    backgroundColor: platformTheme.activeControlBackground,
   },
   navButtonText: {
     color: '#334155',
     fontWeight: '700',
   },
   navButtonTextActive: {
-    color: '#3730a3',
+    color: platformTheme.activeControlText,
   },
   logoutButton: {
     paddingHorizontal: 14,
     paddingVertical: 10,
-    borderRadius: 14,
-    backgroundColor: '#111827',
+    borderRadius: platformTheme.controlRadius,
+    backgroundColor: platformTheme.logoutBackground,
   },
   logoutText: {
-    color: '#fff',
+    color: platformTheme.logoutText,
     fontWeight: '700',
   },
+  headerMeta: {
+    gap: 8,
+  },
   userText: {
-    color: '#4f46e5',
+    color: platformTheme.accent,
     fontWeight: '700',
+  },
+  platformBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: platformTheme.badgeBackground,
+    color: platformTheme.badgeText,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: platformTheme.controlRadius,
+    borderWidth: 1,
+    borderColor: platformTheme.controlBorder,
+    fontWeight: '700',
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   screenContent: {
     padding: 20,
     gap: 24,
-    paddingBottom: 40,
+    paddingBottom: platformTheme.screenPaddingBottom,
   },
   screenTitle: {
     fontSize: 28,
     fontWeight: '800',
-    color: '#101828',
+    color: platformTheme.titleText,
   },
   screenDescription: {
-    color: '#51607a',
+    color: platformTheme.mutedText,
     fontSize: 16,
     lineHeight: 22,
   },
