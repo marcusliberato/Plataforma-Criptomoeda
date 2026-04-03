@@ -10,6 +10,19 @@ function isCameraSupported() {
   return !!navigator.mediaDevices?.getUserMedia;
 }
 
+function isSecureMediaContext() {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  if (window.isSecureContext) {
+    return true;
+  }
+
+  const hostname = String(window.location?.hostname || '');
+  return hostname === 'localhost' || hostname === '127.0.0.1';
+}
+
 function getFacingModeValue(facing) {
   return facing === 'front' ? 'user' : 'environment';
 }
@@ -29,6 +42,15 @@ export const CameraView = forwardRef(function CameraView(
       if (!isCameraSupported()) {
         if (active) {
           setStreamError('A webcam não é suportada neste navegador.');
+        }
+        return;
+      }
+
+      if (!isSecureMediaContext()) {
+        if (active) {
+          setStreamError(
+            'No iPhone, a câmera no navegador exige HTTPS. Use o app nativo iOS ou abra em localhost.',
+          );
         }
         return;
       }
@@ -128,6 +150,7 @@ export function useCameraPermissions() {
   const [permission, setPermission] = useState({
     granted: false,
     status: 'undetermined',
+    reason: '',
   });
 
   async function requestPermission() {
@@ -135,9 +158,21 @@ export function useCameraPermissions() {
       const unsupportedPermission = {
         granted: false,
         status: 'unsupported',
+        reason: 'A webcam não é suportada neste navegador.',
       };
       setPermission(unsupportedPermission);
       return unsupportedPermission;
+    }
+
+    if (!isSecureMediaContext()) {
+      const insecurePermission = {
+        granted: false,
+        status: 'insecure_context',
+        reason:
+          'No iPhone, a câmera no navegador exige HTTPS. Use o app nativo iOS ou localhost.',
+      };
+      setPermission(insecurePermission);
+      return insecurePermission;
     }
 
     try {
@@ -150,13 +185,18 @@ export function useCameraPermissions() {
       const nextPermission = {
         granted: true,
         status: 'granted',
+        reason: '',
       };
       setPermission(nextPermission);
       return nextPermission;
-    } catch {
+    } catch (error) {
       const nextPermission = {
         granted: false,
         status: 'denied',
+        reason:
+          error instanceof Error && error.message
+            ? error.message
+            : 'Permissão negada para câmera.',
       };
       setPermission(nextPermission);
       return nextPermission;

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   CameraView,
   useCameraPermissions,
@@ -9,7 +9,17 @@ export default function Camera({ onCapture }) {
   const [permission, requestPermission] = useCameraPermissions();
   const [photoUri, setPhotoUri] = useState(null);
   const [statusMessage, setStatusMessage] = useState('');
+  const fileInputRef = useRef(null);
   const cameraRef = useRef(null);
+
+  useEffect(
+    () => () => {
+      if (photoUri?.startsWith('blob:')) {
+        URL.revokeObjectURL(photoUri);
+      }
+    },
+    [photoUri],
+  );
 
   async function tirarFoto() {
     if (!cameraRef.current) {
@@ -25,6 +35,28 @@ export default function Camera({ onCapture }) {
     }
   }
 
+  function abrirCapturaFallback() {
+    fileInputRef.current?.click();
+  }
+
+  function selecionarArquivoFallback(event) {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    const uri = URL.createObjectURL(file);
+    setPhotoUri((currentPhotoUri) => {
+      if (currentPhotoUri?.startsWith('blob:')) {
+        URL.revokeObjectURL(currentPhotoUri);
+      }
+      return uri;
+    });
+    setStatusMessage('Foto selecionada pelo navegador. Escolha salvar na galeria ou descartar.');
+    // Permite selecionar o mesmo arquivo novamente em tentativas futuras.
+    event.target.value = '';
+  }
+
   function salvarNaGaleria() {
     if (!photoUri) {
       return;
@@ -37,6 +69,9 @@ export default function Camera({ onCapture }) {
   }
 
   function descartarFoto() {
+    if (photoUri?.startsWith('blob:')) {
+      URL.revokeObjectURL(photoUri);
+    }
     setPhotoUri(null);
     setStatusMessage('Foto descartada. Você pode capturar uma nova imagem.');
   }
@@ -59,6 +94,21 @@ export default function Camera({ onCapture }) {
           >
             Permitir câmera
           </button>
+          <button
+            className='ghost-button camera-button'
+            type='button'
+            onClick={abrirCapturaFallback}
+          >
+            Usar câmera do navegador
+          </button>
+          <input
+            ref={fileInputRef}
+            type='file'
+            accept='image/*'
+            capture='user'
+            onChange={selecionarArquivoFallback}
+            style={{ display: 'none' }}
+          />
         </div>
       ) : !photoUri ? (
         <>
@@ -110,7 +160,9 @@ export default function Camera({ onCapture }) {
         </>
       )}
 
-      <p className='mobile-device-status'>{statusMessage}</p>
+      <p className='mobile-device-status'>
+        {statusMessage || (!permission.granted ? permission.reason : '')}
+      </p>
     </section>
   );
 }
